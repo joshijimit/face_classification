@@ -20,6 +20,8 @@ from utils.inference import load_image
 
 # parameters
 image_path = sys.argv[1]
+# image_path = '../images/color_demo.gif'
+
 # task = sys.argv[2]
 task = 'emotion'
 if task == 'emotion':

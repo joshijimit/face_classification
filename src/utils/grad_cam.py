@@ -8,6 +8,7 @@ from keras.models import load_model
 import numpy as np
 import tensorflow as tf
 from tensorflow.python.framework import ops
+from keras.models import Model
 
 from .preprocessor import preprocess_input
 
@@ -101,6 +102,10 @@ def deprocess_image(x):
     x = np.clip(x, 0, 255).astype('uint8')
     return x
 
+def _compute_gradients(tensor, var_list):
+    grads = tf.gradients(tensor, var_list)
+    return [grad if grad is not None else tf.zeros_like(var)
+            for var, grad in zip(var_list, grads)]
 
 def compile_gradient_function(input_model, category_index, layer_name):
     model = Sequential()
@@ -113,9 +118,12 @@ def compile_gradient_function(input_model, category_index, layer_name):
 
     loss = K.sum(model.layers[-1].output)
     conv_output = model.layers[0].get_layer(layer_name).output
-    gradients = normalize(K.gradients(loss, conv_output)[0])
-    gradient_function = K.function([model.layers[0].input, K.learning_phase()],
+    gradients = normalize(_compute_gradients(loss, [conv_output])[0])
+    gradient_function = K.function([model.layers[0].get_input_at(0), K.learning_phase()],
                                    [conv_output, gradients])
+    #gradients = normalize(_compute_gradients(loss, [conv_output])[0])    
+    #gradient_function = K.function([model.layers[0].input, K.learning_phase()],
+                                   #[conv_output, gradients])
     return gradient_function
 
 
