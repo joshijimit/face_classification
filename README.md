@@ -68,3 +68,18 @@ With a few steps one can get its own face classification and detection running. 
 * Run the train_gender_classification.py file
 > python3 train_gender_classifier.py
 
+### Min System Requirement:
+
+* Windows 10 (Pro will be better)
+* RAM: 8 GB
+* HDD: 256 GB (SDD recommended)
+
+### Installation:
+
+> Anconda Python 3.6
+
+### Dependency :
+* TenserFlow
+* Keras
+* OpenCV
+
